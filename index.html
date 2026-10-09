@@ -100,15 +100,15 @@
   .brand {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 13px;
     font-weight: 800;
-    font-size: 1.05rem;
-    letter-spacing: -0.01em;
+    font-size: 1.45rem;
+    letter-spacing: -0.02em;
   }
   .brand img {
-    width: 36px;
-    height: 36px;
-    border-radius: 9px;
+    width: 52px;
+    height: 52px;
+    border-radius: 13px;
     display: block;
   }
 
@@ -178,15 +178,15 @@
   .blocked ol { margin: 8px 0 0; padding-left: 1.2em; }
   .blocked li { margin: 4px 0; }
 
-  /* Inside an app's built-in browser: one screen that says how to get out */
-  .howto, .pointer { display: none; }
-  .in-app main > h1,
-  .in-app .lede,
+  /* Inside an app's built-in browser: say how to get out first, then show the app */
+  .howto, .pointer, .after-note { display: none; }
   .in-app .terms,
   .in-app .blocked,
   .in-tiktok .cta { display: none !important; }
-  .in-app .page { gap: 20px; }
-  .in-app main { padding-top: 132px; }
+  .in-app main { display: flex; flex-direction: column; padding-top: 128px; }
+  .in-app .howto { order: -2; }
+  .in-app .after-note { order: -1; }
+  .in-app main > h1 { margin-top: 44px; }
   .in-app .pointer {
     display: block;
     position: absolute;
@@ -206,105 +206,39 @@
   @keyframes draw { to { stroke-dashoffset: 0; } }
   .in-app .howto {
     display: block;
-    padding: 20px 22px;
+    padding: 10px 22px;
     border-radius: 16px;
     background: var(--cream);
     color: var(--green);
     font-weight: 800;
-    font-size: clamp(1.25rem, 5.6vw, 1.6rem);
-    line-height: 1.3;
+    font-size: clamp(1.3rem, 6vw, 1.7rem);
+    line-height: 1.25;
     letter-spacing: -0.015em;
-    text-wrap: balance;
     box-shadow: 0 24px 50px -28px rgba(0, 0, 0, 0.8);
   }
-  .howto p { margin: 0; }
-  .howto p + p { margin-top: 8px; }
-  .howto .dots { letter-spacing: 0.08em; white-space: nowrap; }
-  .howto .q { white-space: nowrap; }
+  .step { display: grid; grid-template-columns: 40px 1fr; gap: 16px; align-items: center; padding: 20px 0; }
+  .step + .step { border-top: 1px solid rgba(27, 54, 39, 0.14); }
+  .num { width: 40px; height: 40px; border-radius: 50%; background: var(--green); color: var(--cream); display: grid; place-items: center; font-size: 1.15rem; letter-spacing: 0; }
+  .chip { display: inline-flex; align-items: center; justify-content: center; height: 1.25em; padding: 0 0.42em; border-radius: 0.4em; background: var(--green); color: var(--cream); letter-spacing: 0.1em; font-size: 0.9em; vertical-align: 0.05em; }
+  .menu { display: flex; align-items: center; gap: 12px; margin-top: 10px; padding: 13px 16px; border-radius: 12px; background: #fff; color: #111; font-weight: 500; font-size: 1.15rem; letter-spacing: 0; box-shadow: 0 6px 16px -8px rgba(0, 0, 0, 0.35); }
+  .menu svg { width: 30px; height: 30px; flex: none; }
+  .in-app .after-note { display: block; margin: 18px 2px 0; font-size: 1.2rem; font-weight: 500; color: var(--cream); }
   .in-app .cta { margin-top: 14px; }
   @media (prefers-reduced-motion: reduce) {
     .pointer path { animation: none; stroke-dashoffset: 0; }
   }
 
-  /* Before / after comparison */
-  .compare {
-    position: relative;
-    aspect-ratio: 1;
+  .shot { margin: 0; }
+  .shot img {
+    display: block;
     width: 100%;
     max-width: 520px;
+    height: auto;
+    aspect-ratio: 1;
+    object-fit: cover;
     border-radius: 16px;
-    overflow: hidden;
     background: var(--green);
     box-shadow: 0 30px 60px -30px rgba(0, 0, 0, 0.7);
-    touch-action: pan-y;
-    user-select: none;
-    -webkit-user-select: none;
-  }
-  .compare img {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    pointer-events: none;
-  }
-  .compare .before { clip-path: inset(0 calc(100% - var(--pos)) 0 0); }
-
-  .tag {
-    position: absolute;
-    top: 12px;
-    padding: 5px 11px;
-    border-radius: 999px;
-    font-size: 0.78rem;
-    font-weight: 800;
-    letter-spacing: 0.01em;
-    background: rgba(18, 36, 26, 0.72);
-    color: var(--cream);
-    pointer-events: none;
-  }
-  .tag.b { left: 12px; }
-  .tag.a { right: 12px; }
-
-  .handle {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: var(--pos);
-    width: 2px;
-    margin-left: -1px;
-    background: var(--cream);
-    pointer-events: none;
-  }
-  .handle::after {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 44px;
-    height: 44px;
-    margin: -22px 0 0 -22px;
-    border-radius: 50%;
-    background: var(--cream) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231b3627' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 7l-5 5 5 5M15 7l5 5-5 5'/%3E%3C/svg%3E") center / 22px no-repeat;
-    box-shadow: 0 6px 16px -4px rgba(0, 0, 0, 0.55);
-  }
-
-  /* The real control: an invisible range input over the whole image */
-  .compare input {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    opacity: 0;
-    cursor: ew-resize;
-    -webkit-appearance: none;
-    appearance: none;
-    background: transparent;
-  }
-  .compare:has(input:focus-visible) {
-    outline: 2px solid var(--lamp);
-    outline-offset: 3px;
   }
 
   .caption {
@@ -342,7 +276,7 @@
 <div class="page">
 
   <div class="brand">
-    <img src="icon.png" alt="" width="36" height="36" />
+    <img src="icon.png" alt="" width="52" height="52" />
     Enterio
   </div>
 
@@ -358,9 +292,11 @@
       <path class="head" pathLength="1" d="M120 12 L158 12 L152 50"/>
     </svg>
     <div class="howto" role="status">
-      <p id="ht-1">Tap the <span class="dots">•••</span> at the top right.</p>
-      <p id="ht-2">Then tap <span class="q">“Open in browser”</span> to get Enterio.</p>
+      <div class="step"><span class="num">1</span><span id="ht-1">Tap the <span class="chip">•••</span> at the top right</span></div>
+      <div class="step"><span class="num">2</span><span><span id="ht-2">Tap this in the menu</span>
+        <span class="menu"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="#1e8bf2"/><path d="M17 7l-3.6 6.4-2.8-2.8z" fill="#ff5a4f"/><path d="M7 17l3.6-6.4 2.8 2.8z" fill="#fff"/></svg><span id="ht-3">Open in browser</span></span></span></div>
     </div>
+    <p class="after-note" id="ht-4">The App Store opens by itself.</p>
     <p class="terms">iPhone only. Free to download.</p>
     <div class="blocked" id="blocked" role="status">
       <strong>App Store didn’t open?</strong> This app blocks it. Two ways around:
@@ -371,16 +307,9 @@
     </div>
   </main>
 
-  <figure style="margin:0">
-    <div class="compare" id="compare">
-      <img src="after.jpg" alt="The same living room after the redesign: warm wall lights, marble wall panel, wooden slats." width="1200" height="1200" />
-      <img class="before" src="before.jpg?v=2" alt="A plain living room with a tan leather sofa before the redesign." width="1200" height="1200" />
-      <span class="tag b">Before</span>
-      <span class="tag a">After</span>
-      <span class="handle" aria-hidden="true"></span>
-      <input type="range" min="0" max="100" value="50" step="0.1" aria-label="Drag to compare before and after" />
-    </div>
-    <figcaption class="caption">Drag to compare. The “after” image was generated with AI in Enterio.</figcaption>
+  <figure class="shot">
+    <img src="after.jpg" alt="A living room redesigned with Enterio: warm wall lights, a marble wall panel and wooden slats behind a tan leather sofa." width="1200" height="1200" />
+    <figcaption class="caption">Generated with AI in Enterio.</figcaption>
   </figure>
 
   <footer>
@@ -393,17 +322,6 @@
 </div>
 <script>
   (function () {
-    var box = document.getElementById("compare");
-    var input = box.querySelector("input");
-    var raf = 0;
-
-    function set(v) { box.style.setProperty("--pos", v + "%"); }
-
-    input.addEventListener("input", function () {
-      cancelAnimationFrame(raf);
-      set(input.value);
-    });
-
     if (/[?&]ua=1/.test(location.search)) {
       var d = document.createElement("p");
       d.style.cssText = "font-size:12px;word-break:break-all;opacity:.8";
@@ -411,9 +329,13 @@
       document.querySelector("footer").after(d);
     }
 
-    if (/^de/i.test(navigator.language || "")) {
-      document.getElementById("ht-1").innerHTML = 'Tippe oben rechts auf die <span class="dots">•••</span>';
-      document.getElementById("ht-2").innerHTML = 'Dann auf <span class="q">„Im Browser öffnen“</span>, um Enterio zu laden.';
+    // The menu label follows TikTok's own language, which can differ from the phone's.
+    var appLang = (navigator.userAgent.match(/ByteLocale\/([a-zA-Z]+)/) || [])[1] || navigator.language || "";
+    if (/^de/i.test(appLang)) {
+      document.getElementById("ht-1").innerHTML = 'Tippe oben rechts <span style="white-space:nowrap">auf <span class="chip">•••</span></span>';
+      document.getElementById("ht-2").textContent = "Tippe im Menü auf";
+      document.getElementById("ht-3").textContent = "Im Browser öffnen";
+      document.getElementById("ht-4").textContent = "Der App Store öffnet sich von selbst.";
     }
 
     // In-app browsers (TikTok and others) often refuse to hand over to the App Store.
@@ -433,21 +355,6 @@
         }
       }, inApp ? 1200 : 2500);
     });
-
-    // One authored moment: the divider settles from "mostly before" to the middle.
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    var from = 88, to = 50, dur = 1400, start = 0;
-    set(from);
-    function tick(t) {
-      if (!start) start = t;
-      var p = Math.min((t - start) / dur, 1);
-      var e = 1 - Math.pow(1 - p, 4);
-      var v = from + (to - from) * e;
-      set(v);
-      input.value = v;
-      if (p < 1) raf = requestAnimationFrame(tick);
-    }
-    setTimeout(function () { raf = requestAnimationFrame(tick); }, 350);
   })();
 </script>
 </body>

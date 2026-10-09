@@ -95,6 +95,8 @@
     gap: 28px;
   }
 
+  .page { position: relative; }
+
   .brand {
     display: flex;
     align-items: center;
@@ -176,40 +178,52 @@
   .blocked ol { margin: 8px 0 0; padding-left: 1.2em; }
   .blocked li { margin: 4px 0; }
 
-  /* Shown only inside TikTok's browser */
+  /* Inside an app's built-in browser: one screen that says how to get out */
   .howto, .pointer { display: none; }
-  .in-tiktok .cta, .in-tiktok .blocked { display: none !important; }
-  .in-app .howto {
-    display: block;
-    margin-top: 22px;
-    max-width: 360px;
-    padding: 18px 20px;
-    border-radius: 16px;
-    background: var(--lamp);
-    color: var(--lamp-ink);
-  }
-  .howto-title { margin: 0; font-weight: 800; font-size: 1.1rem; letter-spacing: -0.01em; }
-  .howto ol { margin: 10px 0 0; padding-left: 1.3em; font-size: 1.05rem; }
-  .howto li { margin: 6px 0; }
-  .howto b { font-weight: 800; }
-  .howto-sub { margin: 10px 0 0; font-size: 0.9rem; }
+  .in-app main > h1,
+  .in-app .lede,
+  .in-app .terms,
+  .in-app .blocked,
+  .in-tiktok .cta { display: none !important; }
+  .in-app .page { gap: 20px; }
+  .in-app main { padding-top: 132px; }
   .in-app .pointer {
     display: block;
-    position: fixed;
-    top: max(6px, env(safe-area-inset-top));
-    right: 14px;
-    width: 46px;
-    height: 46px;
+    position: absolute;
+    top: max(4px, env(safe-area-inset-top));
+    right: 10px;
+    width: 172px;
+    height: 160px;
     color: var(--lamp);
-    z-index: 5;
-    animation: nudge 1.4s var(--ease-out) infinite alternate;
+    pointer-events: none;
   }
-  @keyframes nudge {
-    from { transform: translateY(10px); }
-    to { transform: translateY(0); }
+  .pointer path {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: draw 900ms var(--ease-out) 250ms forwards;
   }
+  .pointer .head { animation-delay: 950ms; animation-duration: 300ms; }
+  @keyframes draw { to { stroke-dashoffset: 0; } }
+  .in-app .howto {
+    display: block;
+    padding: 20px 22px;
+    border-radius: 16px;
+    background: var(--cream);
+    color: var(--green);
+    font-weight: 800;
+    font-size: clamp(1.25rem, 5.6vw, 1.6rem);
+    line-height: 1.3;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+    box-shadow: 0 24px 50px -28px rgba(0, 0, 0, 0.8);
+  }
+  .howto p { margin: 0; }
+  .howto p + p { margin-top: 8px; }
+  .howto .dots { letter-spacing: 0.08em; white-space: nowrap; }
+  .howto .q { white-space: nowrap; }
+  .in-app .cta { margin-top: 14px; }
   @media (prefers-reduced-motion: reduce) {
-    .in-app .pointer { animation: none; }
+    .pointer path { animation: none; stroke-dashoffset: 0; }
   }
 
   /* Before / after comparison */
@@ -339,15 +353,14 @@
       Get Enterio on the App Store
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
     </a>
+    <svg class="pointer" viewBox="0 0 172 160" fill="none" stroke="currentColor" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path pathLength="1" d="M14 150 C 30 92, 86 58, 104 86 C 118 110, 82 128, 70 102 C 56 70, 104 36, 156 14"/>
+      <path class="head" pathLength="1" d="M120 12 L158 12 L152 50"/>
+    </svg>
     <div class="howto" role="status">
-      <p class="howto-title" id="ht-title">One more step to get the app</p>
-      <ol>
-        <li id="ht-1">Tap <b>•••</b> in the top right corner</li>
-        <li id="ht-2">Tap <b>Open in browser</b></li>
-      </ol>
-      <p class="howto-sub" id="ht-sub">The App Store opens right after.</p>
+      <p id="ht-1">Tap the <span class="dots">•••</span> at the top right.</p>
+      <p id="ht-2">Then tap <span class="q">“Open in browser”</span> to get Enterio.</p>
     </div>
-    <svg class="pointer" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M24 42V8M10 22L24 8l14 14"/></svg>
     <p class="terms">iPhone only. Free to download.</p>
     <div class="blocked" id="blocked" role="status">
       <strong>App Store didn’t open?</strong> This app blocks it. Two ways around:
@@ -399,10 +412,8 @@
     }
 
     if (/^de/i.test(navigator.language || "")) {
-      document.getElementById("ht-title").textContent = "Noch ein Schritt bis zur App";
-      document.getElementById("ht-1").innerHTML = "Tippe oben rechts auf <b>•••</b>";
-      document.getElementById("ht-2").innerHTML = "Tippe auf <b>Im Browser öffnen</b>";
-      document.getElementById("ht-sub").textContent = "Danach öffnet sich der App Store von selbst.";
+      document.getElementById("ht-1").innerHTML = 'Tippe oben rechts auf die <span class="dots">•••</span>';
+      document.getElementById("ht-2").innerHTML = 'Dann auf <span class="q">„Im Browser öffnen“</span>, um Enterio zu laden.';
     }
 
     // In-app browsers (TikTok and others) often refuse to hand over to the App Store.

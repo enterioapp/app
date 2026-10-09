@@ -140,6 +140,21 @@
     color: var(--cream-soft);
   }
 
+  .blocked {
+    display: none;
+    margin: 14px 0 0;
+    max-width: 360px;
+    padding: 14px 16px;
+    border-radius: 14px;
+    background: rgba(238, 243, 240, 0.1);
+    font-size: 0.95rem;
+    color: var(--cream);
+  }
+  .blocked.show { display: block; }
+  .blocked strong { font-weight: 800; }
+  .blocked ol { margin: 8px 0 0; padding-left: 1.2em; }
+  .blocked li { margin: 4px 0; }
+
   /* Before / after comparison */
   .compare {
     position: relative;
@@ -268,6 +283,13 @@
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
     </a>
     <p class="terms">iPhone only. Free to download.</p>
+    <div class="blocked" id="blocked" role="status">
+      <strong>App Store didn’t open?</strong> This app blocks it. Two ways around:
+      <ol>
+        <li>Tap <strong>•••</strong> at the top right, then <strong>Open in browser</strong>.</li>
+        <li>Or open the App Store yourself and search <strong>Enterio</strong>.</li>
+      </ol>
+    </div>
   </main>
 
   <figure style="margin:0">
@@ -301,6 +323,24 @@
     input.addEventListener("input", function () {
       cancelAnimationFrame(raf);
       set(input.value);
+    });
+
+    // In-app browsers (TikTok and others) often refuse to hand over to the App Store.
+    // If the page is still in front shortly after the tap, show the way around.
+    var cta = document.querySelector(".cta");
+    var blocked = document.getElementById("blocked");
+    var inApp = /musical_ly|Bytedance|TikTok|trill/i.test(navigator.userAgent);
+    cta.addEventListener("click", function (e) {
+      if (inApp) {
+        e.preventDefault();
+        window.location.href = "itms-apps://apps.apple.com/app/id6782976477";
+      }
+      setTimeout(function () {
+        if (document.visibilityState === "visible") {
+          blocked.classList.add("show");
+          blocked.scrollIntoView({ block: "nearest", behavior: "smooth" });
+        }
+      }, inApp ? 1200 : 2500);
     });
 
     // One authored moment: the divider settles from "mostly before" to the middle.

@@ -15,9 +15,14 @@
   // leave it. Everywhere else on an iPhone we go straight to the App Store, once per visit.
   (function () {
     var ua = navigator.userAgent, store = "https://apps.apple.com/app/id6782976477";
-    if (/musical_ly|Bytedance|TikTok|trill/i.test(ua)) {
-      document.documentElement.className += " in-tiktok";
-    } else if (/iPhone|iPad|iPod/.test(ua)) {
+    var ios = /iPhone|iPad|iPod/.test(ua);
+    var tiktok = /musical_ly|Bytedance|TikTok|trill/i.test(ua);
+    // A real browser on iOS names itself (Safari/, CriOS, FxiOS, EdgiOS); an app's
+    // built-in browser does not. Treat every unnamed one like TikTok's.
+    var realBrowser = /Safari\/|CriOS|FxiOS|EdgiOS/.test(ua);
+    if (tiktok || (ios && !realBrowser)) {
+      document.documentElement.className += tiktok ? " in-tiktok in-app" : " in-app";
+    } else if (ios) {
       try {
         if (sessionStorage.getItem("sent")) return;
         sessionStorage.setItem("sent", "1");
@@ -174,7 +179,7 @@
   /* Shown only inside TikTok's browser */
   .howto, .pointer { display: none; }
   .in-tiktok .cta, .in-tiktok .blocked { display: none !important; }
-  .in-tiktok .howto {
+  .in-app .howto {
     display: block;
     margin-top: 22px;
     max-width: 360px;
@@ -188,7 +193,7 @@
   .howto li { margin: 6px 0; }
   .howto b { font-weight: 800; }
   .howto-sub { margin: 10px 0 0; font-size: 0.9rem; }
-  .in-tiktok .pointer {
+  .in-app .pointer {
     display: block;
     position: fixed;
     top: max(6px, env(safe-area-inset-top));
@@ -204,7 +209,7 @@
     to { transform: translateY(0); }
   }
   @media (prefers-reduced-motion: reduce) {
-    .in-tiktok .pointer { animation: none; }
+    .in-app .pointer { animation: none; }
   }
 
   /* Before / after comparison */
@@ -385,6 +390,13 @@
       cancelAnimationFrame(raf);
       set(input.value);
     });
+
+    if (/[?&]ua=1/.test(location.search)) {
+      var d = document.createElement("p");
+      d.style.cssText = "font-size:12px;word-break:break-all;opacity:.8";
+      d.textContent = navigator.userAgent + " | " + document.documentElement.className;
+      document.querySelector("footer").after(d);
+    }
 
     if (/^de/i.test(navigator.language || "")) {
       document.getElementById("ht-title").textContent = "Noch ein Schritt bis zur App";
